@@ -66,7 +66,8 @@ class SiliconFlowEmbeddingFunction(TextEmbeddingFunction):
         payload = {"model": self.name, "input": texts}
 
         try:
-            response = requests.post(url, headers=headers, json=payload)
+            # Add a timeout to prevent the request from hanging indefinitely
+            response = requests.post(url, headers=headers, json=payload, timeout=60)
             response.raise_for_status()
             data = response.json()
             embeddings_data = data.get('data', [])
