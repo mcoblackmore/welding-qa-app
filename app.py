@@ -279,11 +279,14 @@ async def get_answer(query: str, agent, knowledge_query_agent, knowledge_table, 
         knowledge_context = "\n".join(doc["text"] for doc in retrieved_docs[:3]) if retrieved_docs else "No relevant documents found."
 
     # 4. 构建最终提示
-    final_user_prompt = (
-        f"Here is some context from the knowledge base:\n"
-        f"---"_CONTEXT_START_---"\n"
-        f"{knowledge_context}\n"
-        f"---"_CONTEXT_END_---"\n\n"
+        final_user_prompt = (
+        f"Here is some context from the knowledge base:
+"
+        f"---CONTEXT_START---"
+        f"{knowledge_context}
+"
+        f"---CONTEXT_END---"
+
         f"Based on the context above, please answer my question: {query}"
     )
     
