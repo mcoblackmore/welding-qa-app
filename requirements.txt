@@ -1,0 +1,7 @@
+streamlit
+lancedb
+pydantic-ai
+tiktoken
+requests
+pyarrow
+numpy
