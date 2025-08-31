@@ -96,12 +96,11 @@ class SiliconFlowEmbeddingFunction(TextEmbeddingFunction):
 
 class SiliconFlowReranker(Reranker):
     def __init__(self, model_name: str = "Qwen/Qwen3-Reranker-8B", api_key: str = SILICONFLOW_API_KEY, return_score="_relevance_score"):
-        super().__init__()
-        self._score_column = return_score
+        super().__init__(return_score)
         self.model_name = model_name
-        self._api_key = api_key or os.environ.get("SILICONFLOW_API_KEY")
+        self._api_key = api_key or os.getenv("SILICONFLOW_API_KEY")
 
-    def _rerank(self, query: str, documents_table: pa.Table) -> pa.Table:
+    def rerank(self, query: str, documents_table: pa.Table) -> pa.Table:
         if not self._api_key:
             raise ValueError("SiliconFlow API key is required.")
 
@@ -129,10 +128,10 @@ class SiliconFlowReranker(Reranker):
             print(f"Failed to parse reranker API response: {e}. Documents will not be reranked.")
 
         scores_array = pa.array(scores, type=pa.float64())
-        if self._score_column in documents_table.column_names:
-            return documents_table.set_column(documents_table.column_names.index(self._score_column), self._score_column, scores_array)
+        if self.score_column in documents_table.column_names:
+            return documents_table.set_column(documents_table.column_names.index(self.score_column), self.score_column, scores_array)
         else:
-            return documents_table.append_column(self._score_column, scores_array)
+            return documents_table.append_column(self.score_column, scores_array)
 
 # --- LanceDB 和知识库函数 ---
 
